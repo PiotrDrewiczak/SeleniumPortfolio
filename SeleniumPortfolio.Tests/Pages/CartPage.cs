@@ -1,3 +1,4 @@
+using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
@@ -10,6 +11,7 @@ public sealed class CartPage(IWebDriver driver, WebDriverWait wait) : BasePage(d
 
     public int ItemCount => Driver.FindElements(CartItems).Count;
 
+    [AllureStep("Wait until the cart is empty")]
     public bool WaitUntilEmpty()
     {
         WaitForCount(CartItems, 0);
@@ -17,6 +19,9 @@ public sealed class CartPage(IWebDriver driver, WebDriverWait wait) : BasePage(d
     }
     public bool ContainsBackpack => IsVisible(BackpackName);
 
+    [AllureStep("Remove the backpack from the cart")]
     public void RemoveBackpack() => Click(By.Id("remove-sauce-labs-backpack"));
+
+    [AllureStep("Proceed to checkout")]
     public void Checkout() => Click(By.Id("checkout"));
 }

@@ -1,3 +1,4 @@
+using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
@@ -14,6 +15,7 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
     private static readonly By CartBadge = By.CssSelector(".shopping_cart_badge");
 
     public bool IsLoaded => IsVisible(PageTitle) && TextOf(PageTitle) == "Products";
+    [AllureStep("Wait for the Products page to load")]
     public void WaitUntilLoaded()
     {
         WaitUntilVisible(PageTitle);
@@ -23,6 +25,7 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
     }
     public int ProductCount => Driver.FindElements(ProductItems).Count;
 
+    [AllureStep("Sort products by price, low to high")]
     public void SortByPriceLowToHigh()
     {
         var dropdown = Find(SortDropdown);
@@ -35,6 +38,7 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
         return decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
     }
 
+    [AllureStep("Sort products using option {0}")]
     public void SortBy(string optionValue) =>
         new SelectElement(Find(SortDropdown)).SelectByValue(optionValue);
 
@@ -56,6 +60,7 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
         }
     }
 
+    [AllureStep("Wait until the cart badge shows {0}")]
     public void WaitForCartBadge(int expected)
     {
         if (expected == 0)
@@ -65,12 +70,16 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
     }
 
     /// <summary>Adds a product by its id slug, e.g. "sauce-labs-backpack".</summary>
+    [AllureStep("Add {0} to the cart")]
     public void AddToCart(string productSlug) => Click(By.Id($"add-to-cart-{productSlug}"));
+    [AllureStep("Remove {0} from the cart")]
     public void RemoveFromCart(string productSlug) => Click(By.Id($"remove-{productSlug}"));
 
     public void AddBackpackToCart() => AddToCart("sauce-labs-backpack");
+    [AllureStep("Open the cart")]
     public void OpenCart() => Click(By.CssSelector(".shopping_cart_link"));
 
+    [AllureStep("Log out from the burger menu")]
     public void Logout()
     {
         Click(By.Id("react-burger-menu-btn"));

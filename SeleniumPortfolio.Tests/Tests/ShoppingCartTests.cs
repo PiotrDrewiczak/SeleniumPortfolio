@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using NUnit.Framework;
@@ -8,10 +9,15 @@ namespace SeleniumPortfolio.Tests.Tests;
 
 [AllureNUnit]
 [AllureSuite("Cart")]
+[AllureEpic("SauceDemo web shop")]
+[AllureFeature("Shopping cart")]
 [Category("Cart")]
 public sealed class ShoppingCartTests : TestBase
 {
     [Test]
+    [AllureStory("Add and remove products")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("A product added to the cart appears on the cart page and disappears after it is removed.")]
     public void AddThenRemoveProduct_ShouldUpdateCart()
     {
         var inventory = LoginAs(Users.Standard);
@@ -28,6 +34,9 @@ public sealed class ShoppingCartTests : TestBase
     }
 
     [Test]
+    [AllureStory("Add and remove products")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Adding two products raises the cart badge to 2 and both products are listed in the cart.")]
     public void AddMultipleProducts_ShouldUpdateBadgeAndCart()
     {
         var inventory = LoginAs(Users.Standard);
@@ -41,6 +50,9 @@ public sealed class ShoppingCartTests : TestBase
     }
 
     [Test]
+    [AllureStory("Add and remove products")]
+    [AllureSeverity(SeverityLevel.minor)]
+    [AllureDescription("Removing a product directly from the product list clears the cart badge.")]
     public void RemoveFromInventoryPage_ShouldClearCartBadge()
     {
         var inventory = LoginAs(Users.Standard);

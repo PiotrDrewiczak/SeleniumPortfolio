@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using NUnit.Framework;
@@ -8,10 +9,15 @@ namespace SeleniumPortfolio.Tests.Tests;
 
 [AllureNUnit]
 [AllureSuite("Checkout")]
+[AllureEpic("SauceDemo web shop")]
+[AllureFeature("Checkout")]
 [Category("Checkout")]
 public sealed class CheckoutTests : TestBase
 {
     [Test, Category("Smoke")]
+    [AllureStory("Place an order")]
+    [AllureSeverity(SeverityLevel.blocker)]
+    [AllureDescription("A user with a product in the cart enters valid customer details and completes the order.")]
     public void ValidInformation_ShouldCompleteCheckout()
     {
         var checkout = StartCheckoutWithBackpack();
@@ -24,6 +30,9 @@ public sealed class CheckoutTests : TestBase
     }
 
     [Test]
+    [AllureStory("Order overview")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("The order overview shows the item price and a total equal to item total plus tax.")]
     public void Overview_ShouldShowConsistentTotals()
     {
         var checkout = StartCheckoutWithBackpack();
@@ -50,6 +59,9 @@ public sealed class CheckoutTests : TestBase
     }
 
     [TestCaseSource(nameof(InvalidCustomers))]
+    [AllureStory("Checkout form validation")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Leaving first name, last name or postal code empty blocks the order and shows a required-field error.")]
     public void InvalidInformation_ShouldShowValidationError(CustomerInfo customer, string expectedError)
     {
         var checkout = StartCheckoutWithBackpack();

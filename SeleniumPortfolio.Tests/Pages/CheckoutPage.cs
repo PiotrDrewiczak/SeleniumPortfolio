@@ -1,3 +1,4 @@
+using Allure.NUnit.Attributes;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumPortfolio.Tests.Data;
@@ -9,6 +10,7 @@ public sealed class CheckoutPage(IWebDriver driver, WebDriverWait wait) : BasePa
     public void EnterCustomerInformation(CustomerInfo customer) =>
         EnterCustomerInformation(customer.FirstName, customer.LastName, customer.PostalCode);
 
+    [AllureStep("Enter customer information: {0} {1}, postal code {2}")]
     public void EnterCustomerInformation(string firstName, string lastName, string postalCode)
     {
         Type(By.Id("first-name"), firstName);
@@ -16,7 +18,10 @@ public sealed class CheckoutPage(IWebDriver driver, WebDriverWait wait) : BasePa
         Type(By.Id("postal-code"), postalCode);
     }
 
+    [AllureStep("Continue to the order overview")]
     public void Continue() => Click(By.Id("continue"));
+
+    [AllureStep("Finish the order")]
     public void Finish() => Click(By.Id("finish"));
 
     public string GetErrorMessage() => TextOf(By.CssSelector("[data-test='error']"));

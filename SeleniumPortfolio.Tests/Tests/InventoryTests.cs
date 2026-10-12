@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using NUnit.Framework;
@@ -8,10 +9,15 @@ namespace SeleniumPortfolio.Tests.Tests;
 
 [AllureNUnit]
 [AllureSuite("Inventory")]
+[AllureEpic("SauceDemo web shop")]
+[AllureFeature("Product catalogue")]
 [Category("Inventory")]
 public sealed class InventoryTests : TestBase
 {
     [Test, Category("Smoke")]
+    [AllureStory("Sorting")]
+    [AllureSeverity(SeverityLevel.critical)]
+    [AllureDescription("Sorting by price from low to high puts the cheapest product (7.99) first.")]
     public void SortByPriceLowToHigh_ShouldPutCheapestProductFirst()
     {
         var inventory = LoginAs(Users.Standard);
@@ -23,6 +29,9 @@ public sealed class InventoryTests : TestBase
     }
 
     [Test]
+    [AllureStory("Product list")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("After login the catalogue shows all six products.")]
     public void Inventory_ShouldListSixProducts()
     {
         var inventory = LoginAs(Users.Standard);
@@ -33,6 +42,9 @@ public sealed class InventoryTests : TestBase
 
     [TestCase("az")]
     [TestCase("za")]
+    [AllureStory("Sorting")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Sorting by name orders the whole product list alphabetically, A to Z and Z to A.")]
     public void SortByName_ShouldOrderAllProducts(string option)
     {
         var inventory = LoginAs(Users.Standard);
@@ -47,6 +59,9 @@ public sealed class InventoryTests : TestBase
 
     [TestCase("lohi")]
     [TestCase("hilo")]
+    [AllureStory("Sorting")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Sorting by price orders the whole product list, low to high and high to low.")]
     public void SortByPrice_ShouldOrderAllProducts(string option)
     {
         var inventory = LoginAs(Users.Standard);
