@@ -1,5 +1,7 @@
 # SeleniumPortfolio — C# UI Automation Framework
 
+[![UI automation tests](https://github.com/PiotrDrewiczak/SeleniumPortfolio/actions/workflows/dotnet-tests.yml/badge.svg)](https://github.com/PiotrDrewiczak/SeleniumPortfolio/actions/workflows/dotnet-tests.yml)
+
 A portfolio-ready Selenium WebDriver framework built with C#, NUnit and the Page Object Model. The tests target the public demo shop at https://www.saucedemo.com/.
 
 ## Features
@@ -49,13 +51,23 @@ Select a browser:
 BROWSER=firefox dotnet test
 ```
 
+Run a subset by category (`Smoke`, `Login`, `Inventory`, `Cart`, `Checkout`):
+
+```bash
+dotnet test --filter "Category=Smoke"
+```
+
+The `Smoke` tests cover the critical path (login, product list, checkout) and finish quickly; the other categories form the wider regression suite.
+
 Configuration precedence is environment variable first, then `appsettings.json`.
 Supported variables: `BASE_URL`, `BROWSER` (`chrome` or `firefox`), `HEADLESS`, `WAIT_TIMEOUT_SECONDS`.
 
 ## Test scenarios
 
 - Valid login
-- Invalid login
+- Invalid login: wrong password, unknown user, wrong letter case, locked-out user, missing username or password
+- A failed login keeps the user on the login page
+- The inventory page cannot be opened without logging in
 - Inventory page loads and shows products
 - Products can be sorted by price
 - A product can be added to and removed from the cart
@@ -89,9 +101,19 @@ SeleniumPortfolio.Tests/
 │   ├── ShoppingCartTests.cs
 │   └── CheckoutTests.cs
 ├── appsettings.json
+├── appsettings.ci.json
 └── SeleniumPortfolio.Tests.csproj
-└── .github/workflows/dotnet-tests.yml
+.github/workflows/dotnet-tests.yml
 ```
+
+## Continuous integration
+
+GitHub Actions runs on every push and pull request (`.github/workflows/dotnet-tests.yml`):
+
+1. **smoke**: runs the `Smoke` tests headless in Chrome on Ubuntu.
+2. **regression**: runs the full suite, only if the smoke job passed.
+
+Each job uploads its `.trx` results and failure screenshots as build artifacts (Actions run page, *Artifacts* section). The CI profile (`appsettings.ci.json`) is selected with `TEST_ENV=ci`.
 
 ## Next improvements
 
@@ -100,7 +122,7 @@ SeleniumPortfolio.Tests/
 3. Add test data builders and a clearer separation between test data and page objects.
 4. Add retry policy only for known infrastructure instability (avoid hiding flaky tests).
 5. Run tests in a container or a browser matrix in CI.
-6. Add a short architecture diagram and a CI badge to the GitHub repository.
+6. Add a short architecture diagram.
 
 ## Portfolio note
 
