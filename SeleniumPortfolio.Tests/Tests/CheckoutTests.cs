@@ -23,6 +23,22 @@ public sealed class CheckoutTests : TestBase
         Assert.That(checkout.GetCompletionMessage(), Is.EqualTo("Thank you for your order!"));
     }
 
+    [Test]
+    public void Overview_ShouldShowConsistentTotals()
+    {
+        var checkout = StartCheckoutWithBackpack();
+
+        checkout.EnterCustomerInformation(CustomerInfo.Valid);
+        checkout.Continue();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(checkout.GetItemTotal(), Is.EqualTo(29.99m), "Backpack price.");
+            Assert.That(checkout.GetTotal(), Is.EqualTo(checkout.GetItemTotal() + checkout.GetTax()),
+                "Total must equal item total plus tax.");
+        });
+    }
+
     private static IEnumerable<TestCaseData> InvalidCustomers()
     {
         yield return new TestCaseData(CustomerInfo.Valid.WithFirstName(""), "First Name is required")

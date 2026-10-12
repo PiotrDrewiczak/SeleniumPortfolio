@@ -20,5 +20,16 @@ public sealed class CheckoutPage(IWebDriver driver, WebDriverWait wait) : BasePa
     public void Finish() => Click(By.Id("finish"));
 
     public string GetErrorMessage() => TextOf(By.CssSelector("[data-test='error']"));
+    public decimal GetItemTotal() => AmountOf("subtotal-label");
+    public decimal GetTax() => AmountOf("tax-label");
+    public decimal GetTotal() => AmountOf("total-label");
+
+    private decimal AmountOf(string dataTest)
+    {
+        var text = TextOf(By.CssSelector($"[data-test='{dataTest}']"));
+        var amount = System.Text.RegularExpressions.Regex.Match(text, @"\d+(\.\d+)?").Value;
+        return decimal.Parse(amount, System.Globalization.CultureInfo.InvariantCulture);
+    }
+
     public string GetCompletionMessage() => TextOf(By.CssSelector("[data-test='complete-header']"));
 }

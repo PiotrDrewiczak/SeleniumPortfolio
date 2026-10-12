@@ -9,6 +9,9 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
     private static readonly By ProductItems = By.CssSelector(".inventory_item");
     private static readonly By SortDropdown = By.CssSelector("[data-test='product-sort-container']");
     private static readonly By FirstProductPrice = By.CssSelector(".inventory_item_price");
+    private static readonly By ProductNames = By.CssSelector(".inventory_item_name");
+    private static readonly By ProductPrices = By.CssSelector(".inventory_item_price");
+    private static readonly By CartBadge = By.CssSelector(".shopping_cart_badge");
 
     public bool IsLoaded => IsVisible(PageTitle) && TextOf(PageTitle) == "Products";
     public void WaitUntilLoaded()
@@ -32,6 +35,45 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
         return decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    public void AddBackpackToCart() => Click(By.Id("add-to-cart-sauce-labs-backpack"));
+    public void SortBy(string optionValue) =>
+        new SelectElement(Find(SortDropdown)).SelectByValue(optionValue);
+
+    public List<string> GetProductNames() =>
+        Driver.FindElements(ProductNames).Select(e => e.Text).ToList();
+
+    public List<decimal> GetProductPrices() =>
+        Driver.FindElements(ProductPrices)
+            .Select(e => decimal.Parse(e.Text.Replace("$", "").Trim(), System.Globalization.CultureInfo.InvariantCulture))
+            .ToList();
+
+    /// <summary>Number shown on the cart badge; 0 when the badge is not displayed.</summary>
+    public int CartBadgeCount
+    {
+        get
+        {
+            var badges = Driver.FindElements(CartBadge);
+            return badges.Count == 0 ? 0 : int.Parse(badges[0].Text);
+        }
+    }
+
+    public void WaitForCartBadge(int expected)
+    {
+        if (expected == 0)
+            WaitForCount(CartBadge, 0);
+        else
+            Wait.Until(_ => CartBadgeCount == expected);
+    }
+
+    /// <summary>Adds a product by its id slug, e.g. "sauce-labs-backpack".</summary>
+    public void AddToCart(string productSlug) => Click(By.Id($"add-to-cart-{productSlug}"));
+    public void RemoveFromCart(string productSlug) => Click(By.Id($"remove-{productSlug}"));
+
+    public void AddBackpackToCart() => AddToCart("sauce-labs-backpack");
     public void OpenCart() => Click(By.CssSelector(".shopping_cart_link"));
+
+    public void Logout()
+    {
+        Click(By.Id("react-burger-menu-btn"));
+        Click(By.Id("logout_sidebar_link"));
+    }
 }

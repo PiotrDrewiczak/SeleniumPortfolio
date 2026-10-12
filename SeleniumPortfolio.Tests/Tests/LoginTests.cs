@@ -21,6 +21,17 @@ public sealed class LoginTests : TestBase
     }
 
     [Test]
+    public void Logout_ShouldReturnToLoginPage()
+    {
+        var inventory = LoginAs(Users.Standard);
+        inventory.WaitUntilLoaded();
+
+        inventory.Logout();
+
+        Assert.That(LoginPage.WaitUntilLoginFormShown(), Is.True, "Logging out should show the login form.");
+    }
+
+    [Test]
     public void InvalidPassword_ShouldShowHelpfulError()
     {
         LoginAs(Users.WrongPassword);

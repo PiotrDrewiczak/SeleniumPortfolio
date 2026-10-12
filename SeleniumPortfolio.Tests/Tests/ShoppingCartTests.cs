@@ -26,4 +26,30 @@ public sealed class ShoppingCartTests : TestBase
         Assert.That(CartPage.WaitUntilEmpty(), Is.True);
         Assert.That(CartPage.ItemCount, Is.EqualTo(0));
     }
+
+    [Test]
+    public void AddMultipleProducts_ShouldUpdateBadgeAndCart()
+    {
+        var inventory = LoginAs(Users.Standard);
+        inventory.AddToCart("sauce-labs-backpack");
+        inventory.AddToCart("sauce-labs-bike-light");
+
+        inventory.WaitForCartBadge(2);
+        inventory.OpenCart();
+
+        Assert.That(CartPage.ItemCount, Is.EqualTo(2));
+    }
+
+    [Test]
+    public void RemoveFromInventoryPage_ShouldClearCartBadge()
+    {
+        var inventory = LoginAs(Users.Standard);
+        inventory.AddToCart("sauce-labs-backpack");
+        inventory.WaitForCartBadge(1);
+
+        inventory.RemoveFromCart("sauce-labs-backpack");
+
+        inventory.WaitForCartBadge(0);
+        Assert.That(inventory.CartBadgeCount, Is.EqualTo(0));
+    }
 }

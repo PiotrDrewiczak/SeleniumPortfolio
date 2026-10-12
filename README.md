@@ -65,15 +65,17 @@ Supported variables: `BASE_URL`, `BROWSER` (`chrome` or `firefox`), `HEADLESS`, 
 
 ## Test scenarios
 
-- Valid login
+- Valid login and logout
 - Invalid login: wrong password, unknown user, wrong letter case, locked-out user, missing username or password
 - A failed login keeps the user on the login page
 - The inventory page cannot be opened without logging in
-- Inventory page loads and shows products
-- Products can be sorted by price
-- A product can be added to and removed from the cart
+- Inventory page loads and lists all six products
+- Products can be sorted by name (A→Z, Z→A) and by price (low→high, high→low); the whole list is verified, not just the first item
+- A product can be added to and removed from the cart, from both the product list and the cart page
+- Several products can be added; the cart badge and cart contents stay in sync
 - Checkout completes with valid customer information
 - Checkout form validation rejects missing required information
+- The order overview shows a correct item total and `total = item total + tax`
 
 Demo credentials are public credentials supplied by SauceDemo for its demo application:
 - Username: `standard_user`

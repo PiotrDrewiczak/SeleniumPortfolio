@@ -19,6 +19,8 @@ public sealed class LoginPage(IWebDriver driver, WebDriverWait wait) : BasePage(
         Click(LoginButton);
     }
     public bool IsOnLoginPage => IsVisible(LoginButton, TimeSpan.FromSeconds(1));
+    /// <summary>Waits up to the full timeout for the login form, e.g. after a logout redirect.</summary>
+    public bool WaitUntilLoginFormShown() => IsVisible(LoginButton);
     public string GetErrorMessage() => TextOf(ErrorMessage);
     public void OpenDirect(string baseUrl, string path) => Driver.Navigate().GoToUrl($"{baseUrl.TrimEnd('/')}/{path}");
 }
