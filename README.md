@@ -11,7 +11,8 @@ A portfolio-ready Selenium WebDriver framework built with C#, NUnit and the Page
 - Configuration via `appsettings.json` and environment variables
 - Explicit waits; no fixed sleeps
 - NUnit test fixtures and assertions
-- Screenshot capture on test failure
+- Screenshot capture on test failure, attached to the Allure report
+- Allure test report published to GitHub Pages
 - GitHub Actions CI workflow
 - Positive and negative scenarios for login, cart, sorting and checkout
 
@@ -112,17 +113,27 @@ GitHub Actions runs on every push and pull request (`.github/workflows/dotnet-te
 
 1. **smoke**: runs the `Smoke` tests headless in Chrome on Ubuntu.
 2. **regression**: runs the full suite, only if the smoke job passed.
+3. **report**: on `main`, builds the Allure report and publishes it to GitHub Pages.
 
-Each job uploads its `.trx` results and failure screenshots as build artifacts (Actions run page, *Artifacts* section). The CI profile (`appsettings.ci.json`) is selected with `TEST_ENV=ci`.
+Each test job uploads its `.trx` results, failure screenshots and raw Allure results as build artifacts (Actions run page, *Artifacts* section). The CI profile (`appsettings.ci.json`) is selected with `TEST_ENV=ci`.
+
+## Test report
+
+The latest Allure report is published at https://piotrdrewiczak.github.io/SeleniumPortfolio/. Tests are grouped by suite (Login, Inventory, Cart, Checkout) and failed tests include a screenshot.
+
+To build the report locally, run the tests and then, with the [Allure CLI](https://allurereport.org/docs/install/) installed:
+
+```bash
+allure serve SeleniumPortfolio.Tests/bin/Debug/net8.0/allure-results
+```
 
 ## Next improvements
 
-1. Add Allure or another report generator.
-2. Add API tests and contract checks.
-3. Add test data builders and a clearer separation between test data and page objects.
-4. Add retry policy only for known infrastructure instability (avoid hiding flaky tests).
-5. Run tests in a container or a browser matrix in CI.
-6. Add a short architecture diagram.
+1. Add API tests and contract checks.
+2. Add test data builders and a clearer separation between test data and page objects.
+3. Add retry policy only for known infrastructure instability (avoid hiding flaky tests).
+4. Run tests in a container or a browser matrix in CI.
+5. Add a short architecture diagram.
 
 ## Portfolio note
 
