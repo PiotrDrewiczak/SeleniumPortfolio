@@ -1,0 +1,27 @@
+name: UI automation tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore SeleniumPortfolio.Tests/SeleniumPortfolio.Tests.csproj
+
+      - name: Run tests (headless)
+        run: dotnet test SeleniumPortfolio.Tests/SeleniumPortfolio.Tests.csproj --configuration Release
+        env:
+          HEADLESS: "true"
+          BROWSER: chrome
