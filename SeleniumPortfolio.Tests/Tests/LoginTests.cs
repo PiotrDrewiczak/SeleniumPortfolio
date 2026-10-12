@@ -1,9 +1,13 @@
+using Allure.NUnit;
+using Allure.NUnit.Attributes;
 using NUnit.Framework;
 using SeleniumPortfolio.Tests.Core;
 using SeleniumPortfolio.Tests.Data;
 
 namespace SeleniumPortfolio.Tests.Tests;
 
+[AllureNUnit]
+[AllureSuite("Login")]
 [Category("Login")]
 public sealed class LoginTests : TestBase
 {

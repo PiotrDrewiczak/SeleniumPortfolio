@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
@@ -84,6 +85,7 @@ public abstract class TestBase
         var path = Path.Combine(directory, $"{safeName}_{DateTime.UtcNow:yyyyMMdd_HHmmss}.png");
         screenshotDriver.GetScreenshot().SaveAsFile(path);
         TestContext.AddTestAttachment(path, "Failure screenshot");
+        AllureApi.AddAttachment("Failure screenshot", "image/png", File.ReadAllBytes(path), ".png");
         TestContext.Out.WriteLine($"Screenshot saved: {path}");
     }
 }

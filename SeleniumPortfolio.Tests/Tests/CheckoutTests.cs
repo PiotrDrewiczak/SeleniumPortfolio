@@ -1,9 +1,13 @@
+using Allure.NUnit;
+using Allure.NUnit.Attributes;
 using NUnit.Framework;
 using SeleniumPortfolio.Tests.Core;
 using SeleniumPortfolio.Tests.Data;
 
 namespace SeleniumPortfolio.Tests.Tests;
 
+[AllureNUnit]
+[AllureSuite("Checkout")]
 [Category("Checkout")]
 public sealed class CheckoutTests : TestBase
 {
