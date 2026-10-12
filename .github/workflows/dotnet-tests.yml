@@ -5,9 +5,18 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TEST_ENV: ci
+  BROWSER: chrome
+
 jobs:
-  test:
+  smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,8 +29,55 @@ jobs:
       - name: Restore
         run: dotnet restore SeleniumPortfolio.Tests/SeleniumPortfolio.Tests.csproj
 
-      - name: Run tests (headless)
-        run: dotnet test SeleniumPortfolio.Tests/SeleniumPortfolio.Tests.csproj --configuration Release
-        env:
-          HEADLESS: "true"
-          BROWSER: chrome
+      - name: Smoke tests
+        run: >
+          dotnet test SeleniumPortfolio.Tests/SeleniumPortfolio.Tests.csproj
+          --configuration Release
+          --no-restore
+          --filter "Category=Smoke"
+          --logger "trx;LogFileName=smoke.trx"
+          --logger "console;verbosity=normal"
+
+      - name: Upload results and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-results
+          path: |
+            SeleniumPortfolio.Tests/**/TestResults/*.trx
+            SeleniumPortfolio.Tests/**/Artifacts/Screenshots/*.png
+          if-no-files-found: ignore
+
+  regression:
+    needs: smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore SeleniumPortfolio.Tests/SeleniumPortfolio.Tests.csproj
+
+      - name: Full regression
+        run: >
+          dotnet test SeleniumPortfolio.Tests/SeleniumPortfolio.Tests.csproj
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=regression.trx"
+          --logger "console;verbosity=normal"
+
+      - name: Upload results and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-results
+          path: |
+            SeleniumPortfolio.Tests/**/TestResults/*.trx
+            SeleniumPortfolio.Tests/**/Artifacts/Screenshots/*.png
+          if-no-files-found: ignore
