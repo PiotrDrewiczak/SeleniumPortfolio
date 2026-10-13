@@ -38,7 +38,7 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
         return decimal.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    [AllureStep("Sort products using option {0}")]
+    [AllureStep("Sort products using option {optionValue}")]
     public void SortBy(string optionValue) =>
         new SelectElement(Find(SortDropdown)).SelectByValue(optionValue);
 
@@ -60,7 +60,7 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
         }
     }
 
-    [AllureStep("Wait until the cart badge shows {0}")]
+    [AllureStep("Wait until the cart badge shows {expected}")]
     public void WaitForCartBadge(int expected)
     {
         if (expected == 0)
@@ -70,12 +70,16 @@ public sealed class InventoryPage(IWebDriver driver, WebDriverWait wait) : BaseP
     }
 
     /// <summary>Adds a product by its id slug, e.g. "sauce-labs-backpack".</summary>
-    [AllureStep("Add {0} to the cart")]
+    [AllureStep("Add {productSlug} to the cart")]
     public void AddToCart(string productSlug) => Click(By.Id($"add-to-cart-{productSlug}"));
-    [AllureStep("Remove {0} from the cart")]
+    [AllureStep("Remove {productSlug} from the cart")]
     public void RemoveFromCart(string productSlug) => Click(By.Id($"remove-{productSlug}"));
 
     public void AddBackpackToCart() => AddToCart("sauce-labs-backpack");
+    [AllureStep("Open the details of {productName}")]
+    public void OpenProduct(string productName) =>
+        Click(By.XPath($"//div[@data-test='inventory-item-name' and text()='{productName}']"));
+
     [AllureStep("Open the cart")]
     public void OpenCart() => Click(By.CssSelector(".shopping_cart_link"));
 

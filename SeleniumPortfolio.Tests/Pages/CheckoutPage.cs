@@ -10,7 +10,7 @@ public sealed class CheckoutPage(IWebDriver driver, WebDriverWait wait) : BasePa
     public void EnterCustomerInformation(CustomerInfo customer) =>
         EnterCustomerInformation(customer.FirstName, customer.LastName, customer.PostalCode);
 
-    [AllureStep("Enter customer information: {0} {1}, postal code {2}")]
+    [AllureStep("Enter customer information: {firstName} {lastName}, postal code {postalCode}")]
     public void EnterCustomerInformation(string firstName, string lastName, string postalCode)
     {
         Type(By.Id("first-name"), firstName);
@@ -20,6 +20,12 @@ public sealed class CheckoutPage(IWebDriver driver, WebDriverWait wait) : BasePa
 
     [AllureStep("Continue to the order overview")]
     public void Continue() => Click(By.Id("continue"));
+
+    [AllureStep("Cancel checkout")]
+    public void Cancel() => Click(By.Id("cancel"));
+
+    public List<string> GetOverviewItemNames() =>
+        Driver.FindElements(By.CssSelector(".cart_item [data-test='inventory-item-name']")).Select(e => e.Text).ToList();
 
     [AllureStep("Finish the order")]
     public void Finish() => Click(By.Id("finish"));

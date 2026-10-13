@@ -73,8 +73,11 @@ Supported variables: `BASE_URL`, `BROWSER` (`chrome` or `firefox`), `HEADLESS`, 
 - Products can be sorted by name (A→Z, Z→A) and by price (low→high, high→low); the whole list is verified, not just the first item
 - A product can be added to and removed from the cart, from both the product list and the cart page
 - Several products can be added; the cart badge and cart contents stay in sync
+- Cart contents persist after continuing shopping
+- The product details page matches the product list and links back to it
 - Checkout completes with valid customer information
 - Checkout form validation rejects missing required information
+- The order overview lists the selected products; cancelling checkout returns to the cart
 - The order overview shows a correct item total and `total = item total + tax`
 
 Demo credentials are public credentials supplied by SauceDemo for its demo application:
@@ -97,6 +100,7 @@ SeleniumPortfolio.Tests/
 │   ├── LoginPage.cs
 │   ├── InventoryPage.cs
 │   ├── CartPage.cs
+│   ├── ProductDetailsPage.cs
 │   └── CheckoutPage.cs
 ├── Tests/
 │   ├── LoginTests.cs

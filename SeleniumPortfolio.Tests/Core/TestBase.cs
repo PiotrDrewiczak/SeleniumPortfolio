@@ -19,6 +19,7 @@ public abstract class TestBase
     protected InventoryPage InventoryPage => new(Driver, Wait);
     protected CartPage CartPage => new(Driver, Wait);
     protected CheckoutPage CheckoutPage => new(Driver, Wait);
+    protected ProductDetailsPage ProductDetailsPage => new(Driver, Wait);
 
     [SetUp]
     public void SetUp()

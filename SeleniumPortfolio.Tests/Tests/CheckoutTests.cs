@@ -71,4 +71,31 @@ public sealed class CheckoutTests : TestBase
 
         Assert.That(checkout.GetErrorMessage(), Does.Contain(expectedError));
     }
+
+    [Test]
+    [AllureStory("Order overview")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("The order overview lists exactly the products that were placed in the cart.")]
+    public void Overview_ShouldListSelectedProducts()
+    {
+        var checkout = StartCheckoutWithBackpack();
+
+        checkout.EnterCustomerInformation(CustomerInfo.Valid);
+        checkout.Continue();
+
+        Assert.That(checkout.GetOverviewItemNames(), Is.EqualTo(new[] { "Sauce Labs Backpack" }));
+    }
+
+    [Test]
+    [AllureStory("Cancel checkout")]
+    [AllureSeverity(SeverityLevel.minor)]
+    [AllureDescription("Cancelling on the customer information step returns to the cart with the product still in it.")]
+    public void Cancel_ShouldReturnToCartKeepingItems()
+    {
+        var checkout = StartCheckoutWithBackpack();
+
+        checkout.Cancel();
+
+        Assert.That(CartPage.ContainsBackpack, Is.True);
+    }
 }

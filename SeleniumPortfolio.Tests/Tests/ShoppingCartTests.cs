@@ -23,6 +23,7 @@ public sealed class ShoppingCartTests : TestBase
         var inventory = LoginAs(Users.Standard);
         inventory.AddBackpackToCart();
         inventory.OpenCart();
+        CartPage.WaitForItemCount(1);
 
         Assert.That(CartPage.ItemCount, Is.EqualTo(1));
         Assert.That(CartPage.ContainsBackpack, Is.True);
@@ -45,6 +46,7 @@ public sealed class ShoppingCartTests : TestBase
 
         inventory.WaitForCartBadge(2);
         inventory.OpenCart();
+        CartPage.WaitForItemCount(2);
 
         Assert.That(CartPage.ItemCount, Is.EqualTo(2));
     }
@@ -63,5 +65,45 @@ public sealed class ShoppingCartTests : TestBase
 
         inventory.WaitForCartBadge(0);
         Assert.That(inventory.CartBadgeCount, Is.EqualTo(0));
+    }
+
+    [Test]
+    [AllureStory("Cart contents")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("Products stay in the cart after the user continues shopping and returns to the cart.")]
+    public void CartContents_ShouldPersistAfterContinueShopping()
+    {
+        var inventory = LoginAs(Users.Standard);
+        inventory.AddToCart("sauce-labs-backpack");
+        inventory.OpenCart();
+
+        CartPage.ContinueShopping();
+        inventory.WaitUntilLoaded();
+        inventory.OpenCart();
+        CartPage.WaitForItemCount(1);
+
+        Assert.That(CartPage.GetItemNames(), Is.EqualTo(new[] { "Sauce Labs Backpack" }));
+    }
+
+    [Test]
+    [AllureStory("Product details")]
+    [AllureSeverity(SeverityLevel.normal)]
+    [AllureDescription("The product details page shows the same name and price as the product list, and links back to it.")]
+    public void ProductDetails_ShouldMatchProductList()
+    {
+        var inventory = LoginAs(Users.Standard);
+        inventory.WaitUntilLoaded();
+
+        inventory.OpenProduct("Sauce Labs Bike Light");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ProductDetailsPage.GetName(), Is.EqualTo("Sauce Labs Bike Light"));
+            Assert.That(ProductDetailsPage.GetPrice(), Is.EqualTo(9.99m));
+        });
+
+        ProductDetailsPage.BackToProducts();
+        inventory.WaitUntilLoaded();
+        Assert.That(inventory.ProductCount, Is.EqualTo(6));
     }
 }

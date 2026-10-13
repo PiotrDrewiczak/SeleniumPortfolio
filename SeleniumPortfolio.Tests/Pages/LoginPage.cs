@@ -14,7 +14,7 @@ public sealed class LoginPage(IWebDriver driver, WebDriverWait wait) : BasePage(
     [AllureStep("Open the login page")]
     public void Open(string baseUrl) => Driver.Navigate().GoToUrl(baseUrl);
 
-    [AllureStep("Log in as user {0}")]
+    [AllureStep("Log in as user {username}")]
     public void LoginAs(string username, string password)
     {
         Type(UsernameInput, username);
@@ -29,6 +29,6 @@ public sealed class LoginPage(IWebDriver driver, WebDriverWait wait) : BasePage(
     [AllureStep("Read the login error message")]
     public string GetErrorMessage() => TextOf(ErrorMessage);
 
-    [AllureStep("Open {1} directly without logging in")]
+    [AllureStep("Open {path} directly without logging in")]
     public void OpenDirect(string baseUrl, string path) => Driver.Navigate().GoToUrl($"{baseUrl.TrimEnd('/')}/{path}");
 }
